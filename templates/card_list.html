@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTG Cards</title>
+    <style>
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 200px;
+        }
+        .card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .filters form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>MTG Cards</h1>
+    <div class="filters">
+        <form method="get" action="/">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <div>
+                <label for="color">Color:</label>
+                <select id="color" name="color">
+                    <option value="">All</option>
+                    <option value="W">White</option>
+                    <option value="U">Blue</option>
+                    <option value="B">Black</option>
+                    <option value="R">Red</option>
+                    <option value="G">Green</option>
+                </select>
+            </div>
+            <div>
+                <label for="rarity">Rarity:</label>
+                <select id="rarity" name="rarity">
+                    <option value="">All</option>
+                    <option value="Common">Common</option>
+                    <option value="Uncommon">Uncommon</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Mythic Rare">Mythic Rare</option>
+                </select>
+            </div>
+            <div>
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type">
+            </div>
+            <div>
+                <label for="subtype">Subtype:</label>
+                <input type="text" id="subtype" name="subtype">
+            </div>
+            <div>
+                <label for="set">Set:</label>
+                <input type="text" id="set" name="set">
+            </div>
+            <div>
+                <label for="language">Language:</label>
+                <input type="text" id="language" name="language">
+            </div>
+            <div>
+                <button type="submit">Filter</button>
+            </div>
+        </form>
+    </div>
+    <div id="cards-container" class="card-container">
+        {{range .}}
+            {{if .ImageURL}}
+                <div class="card">
+                    <h2>{{.Name}}</h2>
+                    <img src="{{.ImageURL}}" alt="{{.Name}}" onerror="this.parentElement.classList.add('hidden')">
+                    <p><strong>Mana Cost:</strong> {{.ManaCost}}</p>
+                    <p><strong>Type:</strong> {{.Type}}</p>
+                    <p><strong>Set:</strong> {{.SetName}}</p>
+                    <p><strong>Rarity:</strong> {{.Rarity}}</p>
+                </div>
+            {{end}}
+        {{end}}
+    </div>
+    <div id="load-more-container">
+        <button id="load-more" onclick="loadMore()">Load More</button>
+    </div>
+
+    <script>
+        let page = 1;
+
+        function loadMore() {
+            page++;
+            const name = document.getElementById('name').value;
+            const color = document.getElementById('color').value;
+            const rarity = document.getElementById('rarity').value;
+            const type = document.getElementById('type').value;
+            const subtype = document.getElementById('subtype').value;
+            const set = document.getElementById('set').value;
+            const language = document.getElementById('language').value;
+            const url = `/?page=${page}&name=${name}&color=${color}&rarity=${rarity}&type=${type}&subtype=${subtype}&set=${set}&language=${language}`;
+
+            fetch(url).then(response => response.text()).then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const newCards = doc.getElementById('cards-container').innerHTML;
+                document.getElementById('cards-container').innerHTML += newCards;
+                if (newCards.trim() === "") {
+                    document.getElementById('load-more').style.display = 'none';
+                }
+            }).catch(error => console.error('Error loading more cards:', error));
+        }
+    </script>
+</body>
+</html>
