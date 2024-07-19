@@ -4,39 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTG Cards</title>
-    <style>
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .card {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 200px;
-        }
-        .card img {
-            max-width: 100%;
-            height: auto;
-        }
-        .filters {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .filters form {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body>
     <h1>MTG Cards</h1>
@@ -98,6 +66,7 @@
                     <p><strong>Type:</strong> {{.Type}}</p>
                     <p><strong>Set:</strong> {{.SetName}}</p>
                     <p><strong>Rarity:</strong> {{.Rarity}}</p>
+                    <p><a href="https://www.ligamagic.com.br/?view=cards/card&card={{.Name}}" target="_blank"><strong>LigaMagic</strong></a></p>
                 </div>
             {{end}}
         {{end}}
